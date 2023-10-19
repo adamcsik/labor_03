@@ -2,7 +2,7 @@
 def regisztracio():
     felhasznalo_email = felhasznalonev()
     felhasznalo_jelszo = jelszo_bekerese()
-    if jelszo_ellenorzese(felhasznalo_jelszo, 3):
+    if jelszo_ellenorzese(felhasznalo_jelszo, 3, "Kérem ismét írja be a jelszót: "):
         ok_regisztracio = True
         with open("felhasznalok.csv", "a", encoding="utf-8") as fajl:
             fajl.write(felhasznalo_email + ";" + felhasznalo_jelszo + "\n")
@@ -51,11 +51,11 @@ def jelszo_bekerese():
             ok_jelszo = True
     return felhasznalo_jelszo
 
-def jelszo_ellenorzese(felhasznalo_jelszo, probalkozas):
-    jelszo2 = input("Kérem ismét írja be a jelszót: ")
+def jelszo_ellenorzese(felhasznalo_jelszo, probalkozas, uzenet):
+    jelszo2 = input(uzenet)
     i = 1
     while jelszo2 != felhasznalo_jelszo and i < probalkozas:
-        jelszo2 = input("Nem megfelelő a jelszó!\nKérem ismét írja be a jelszót: ")
+        jelszo2 = input(uzenet)
         i += 1
     if jelszo2 == felhasznalo_jelszo:
         egyezes = True
@@ -63,13 +63,35 @@ def jelszo_ellenorzese(felhasznalo_jelszo, probalkozas):
         egyezes = False
     return egyezes
 
+def felhasznalo_ellenorzese(email):
+    jelszo = ""
+    with open("felhasznalok.csv", "r", encoding="utf-8") as fajl:
+        for sor in fajl:
+            user = sor.strip().split(";")
+            if user[0] == email:
+                jelszo = user[1]
+    return jelszo
+
 def beleptetes():
-    pass
+    ok_belepes = True
+    jelszo = felhasznalo_ellenorzese(felhasznalonev())
+    if jelszo == "":
+        print("Nincs ilyen felhasználó!")
+        ok_belepes = False
+    else:
+        if not jelszo_ellenorzese(jelszo, 3, "Kérem a jelszót: "):
+            print("Nem megfelelő a jelszó!")
+            ok_belepes = False
+    return ok_belepes
 
 
 # Innen indul majd a program
-if regisztracio():
-    print("Sikeres volt a regisztráció!\nElindítjuk az első beléptetést!")
-    beleptetes()
-else:
-    print("Nem sikerült a regisztráció! Próbálja meg újra!")
+if __name__ == "__main__":
+    if regisztracio():
+        print("Sikeres volt a regisztráció!\nElindítjuk az első beléptetést!")
+        if beleptetes():
+            print("Üdv a fedélzeten!")
+        else:
+            print("Hiába próbáékoztál!")
+    else:
+        print("Nem sikerült a regisztráció! Próbálja meg újra!")

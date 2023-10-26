@@ -84,6 +84,21 @@ def beleptetes():
             ok_belepes = False
     return ok_belepes
 
+def jelszo_generalas(hossz, kisbetu, nagybetu, szam):
+    import string
+    import random
+    jelszo = ""
+    karaktersor = ""
+    if kisbetu:
+        karaktersor = karaktersor + string.ascii_lowercase
+    if nagybetu:
+        karaktersor = karaktersor + string.ascii_uppercase
+    if szam:
+        karaktersor = karaktersor + string.digits
+
+    for _ in range(hossz):
+        jelszo = jelszo + karaktersor[random.randint(0, len(karaktersor)-1)]
+    return jelszo
 
 # Innen indul majd a program
 if __name__ == "__main__":

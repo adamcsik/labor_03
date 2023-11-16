@@ -1,13 +1,21 @@
 from tkinter import *
 from tkinter import messagebox
 import gyak_09
+from gyak_11 import *
 
 def belepes_ablak():
-    def ok_gomb_kezelese():
-        belepes.destroy()
-
     def reg_gomb_kezelse():
         belepes.destroy()
+
+    def ok_gomb_kezelese():
+        if fhsz.get() == "" or fjsz.get() == "":
+            messagebox.showerror("Hiba", "Nem lehet üres egyik mező sem!")
+        else:
+            if ab_jelszokeres(fhsz.get()) == "":
+                messagebox.showerror("Hiba", "Nincs regisztrálva vagy nm jó a jelszó!")
+            else:
+                messagebox.showinfo("Belépés", "Üdv a fedélzeten!")
+                belepes.destroy()
 
     belepes = Tk()
     belepes.title("Belépés")
@@ -15,8 +23,12 @@ def belepes_ablak():
     felh_nev_cimke = Label(belepes, text="Felhasználó neve (email):")
     felh_jelszo_cimke = Label(belepes, text="Jelszó:")
 
-    felh_nev = Entry(belepes, width=30)
-    felh_jelszo = Entry(belepes, width=20)
+    fhsz = StringVar()
+    fhsz.set("")
+    felh_nev = Entry(belepes, textvariable=fhsz, width=30)
+    fjsz = StringVar()
+    fjsz.set("")
+    felh_jelszo = Entry(belepes, textvariable=fjsz, width=20)
 
     gomb_ok = Button(belepes, text="OK", command=ok_gomb_kezelese, width=10)
     gomb_reg = Button(belepes, text="Regisztráció", command=reg_gomb_kezelse)
@@ -32,11 +44,13 @@ def belepes_ablak():
 
 def reg_ablak():
     def ok_gomb_kezelese():
-        if jsz.get() == jsz2.get():
-            regisztracio.destroy()
-        else:
+        if jsz.get() != jsz2.get():
             messagebox.showerror("Hiba", "Nem egyforma a két beírt jelszó!")
-
+        elif jsz.get() == "" or jsz2.get() == "" or  fhnev.get() == "":
+            messagebox.showerror("Hiba", "Nem lehet üres mező az ablakban")
+        else:
+            ab_rogzites(fhnev.get(), jsz.get())
+            regisztracio.destroy()
     def jelszo_gomb_kezelese():
         pw.jelszo_generalasa()
         jsz.set(pw.jelszo)
@@ -52,7 +66,9 @@ def reg_ablak():
     felh_jelszo_cimke =Label(regisztracio, text="Jelszó:")
     felh_jelszo2_cimke = Label(regisztracio, text="A jelszó ismét:")
 
-    felh_nev = Entry(regisztracio, width=30)
+    fhnev = StringVar()
+    fhnev.set("")
+    felh_nev = Entry(regisztracio, textvariable=fhnev, width=30)
     jsz = StringVar()
     jsz.set("")
     felh_jelszo = Entry(regisztracio, textvariable=jsz, width=20)
@@ -74,4 +90,7 @@ def reg_ablak():
 
     regisztracio.mainloop()
 
-reg_ablak()
+ab_lerehoz()
+#reg_ablak()
+belepes_ablak()
+ab_lezar()
